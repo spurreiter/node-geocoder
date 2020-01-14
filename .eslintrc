@@ -1,0 +1,22 @@
+{
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "rules": {
+    "strict": 0,
+    "quotes": [1, "double"],
+    "no-console": 1,
+    "camelcase": 0,
+    "no-underscore-dangle": 0,
+    "no-shadow": 0,
+    "no-multi-spaces": 0,
+    "eqeqeq": 0,
+    "key-spacing": 0,
+    "comma-spacing": 0,
+    "no-unreachable": 1,
+    "no-var": 1
+  }
+}

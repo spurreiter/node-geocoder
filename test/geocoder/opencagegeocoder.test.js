@@ -1,93 +1,90 @@
 (function() {
-    var chai = require('chai'),
-        should = chai.should(),
-        expect = chai.expect,
-        sinon = require('sinon');
+    const chai = require("chai"), should = chai.should(), expect = chai.expect, sinon = require("sinon");
 
-    var OpenCageGeocoder = require('../../lib/geocoder/opencagegeocoder.js');
+    const OpenCageGeocoder = require("../../lib/geocoder/opencagegeocoder.js");
 
-    var mockedHttpAdapter = {
+    const mockedHttpAdapter = {
         get: function() {}
     };
 
-    describe('OpenCageGeocoder', () => {
+    describe("OpenCageGeocoder", () => {
 
-        describe('#constructor' , () => {
+        describe("#constructor" , () => {
 
-            test('an http adapter must be set', () => {
+            test("an http adapter must be set", () => {
 
-                expect(function() {new OpenCageGeocoder();}).to.throw(Error, 'OpenCageGeocoder need an httpAdapter');
+                expect(function() {new OpenCageGeocoder();}).to.throw(Error, "OpenCageGeocoder need an httpAdapter");
             });
 
-            test('an apiKey must be set', () => {
+            test("an apiKey must be set", () => {
 
-                expect(function() {new OpenCageGeocoder(mockedHttpAdapter);}).to.throw(Error, 'OpenCageGeocoder needs an apiKey');
+                expect(function() {new OpenCageGeocoder(mockedHttpAdapter);}).to.throw(Error, "OpenCageGeocoder needs an apiKey");
             });
 
-            test('Should be an instance of OpenCageGeocoder', () => {
+            test("Should be an instance of OpenCageGeocoder", () => {
 
-                var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
 
                 ocgAdapter.should.be.instanceof(OpenCageGeocoder);
             });
 
         });
 
-        describe('#geocode' , () => {
+        describe("#geocode" , () => {
 
-            test('Should not accept IPv4', () => {
+            test("Should not accept IPv4", () => {
 
-                var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
 
                 expect(function() {
-                        ocgAdapter.geocode('127.0.0.1');
-                }).to.throw(Error, 'OpenCageGeocoder does not support geocoding IPv4');
+                        ocgAdapter.geocode("127.0.0.1");
+                }).to.throw(Error, "OpenCageGeocoder does not support geocoding IPv4");
 
             });
 
-            test('Should not accept IPv6', () => {
+            test("Should not accept IPv6", () => {
 
-                var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
 
                 expect(function() {
-                        ocgAdapter.geocode('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
-                }).to.throw(Error, 'OpenCageGeocoder does not support geocoding IPv6');
+                        ocgAdapter.geocode("2001:0db8:0000:85a3:0000:0000:ac1f:8001");
+                }).to.throw(Error, "OpenCageGeocoder does not support geocoding IPv6");
 
             });
 
-            test('Should call httpAdapter get method', () => {
+            test("Should call httpAdapter get method", () => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().returns({then: function() {}});
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().returns({then: function() {}});
 
-                var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
 
-                ocgAdapter.geocode('1 champs élysée Paris');
+                ocgAdapter.geocode("1 champs élysée Paris");
 
                 mock.verify();
 
             });
 
             test(
-                'Should call httpAdapter get method with components if called with object',
+                "Should call httpAdapter get method with components if called with object",
                 () => {
 
-                    var mock = sinon.mock(mockedHttpAdapter);
-                    mock.expects('get').withArgs('http://api.opencagedata.com/geocode/v1/json', {
-                        q: '1 champs élysée Paris',
-                        bounds: '2.01,48.01,3.01,49.01',
-                        countrycode: 'fr',
+                    const mock = sinon.mock(mockedHttpAdapter);
+                    mock.expects("get").withArgs("http://api.opencagedata.com/geocode/v1/json", {
+                        q: "1 champs élysée Paris",
+                        bounds: "2.01,48.01,3.01,49.01",
+                        countrycode: "fr",
                         limit: 1,
                         min_confidence: 4,
-                        key: 'API_KEY'
+                        key: "API_KEY"
                     }).once().returns({then: function() {}});
 
-                    var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                    const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
 
                     ocgAdapter.geocode({
-                        address: '1 champs élysée Paris',
+                        address: "1 champs élysée Paris",
                         bounds: [2.01,48.01,3.01,49.01],
-                        countryCode: 'fr',
+                        countryCode: "fr",
                         limit: 1,
                         minConfidence: 4
                     });
@@ -96,9 +93,9 @@
                 }
             );
 
-            test('Should return geocoded address', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, {
+            test("Should return geocoded address", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, {
                         "status" : {
                           "code" : 200,
                           "message" : "OK"
@@ -144,9 +141,9 @@
                     }
                 );
 
-                var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
 
-                ocgAdapter.geocode('Rua Cafelândia, Carapicuíba, Brasil', function(err, results) {
+                ocgAdapter.geocode("Rua Cafelândia, Carapicuíba, Brasil", function(err, results) {
                     err.should.to.equal(false);
 
                     results[0].should.to.deep.equal({
@@ -218,10 +215,10 @@
 
         });
 
-        describe('#reverse' , () => {
-            test('Should return geocoded address', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, {
+        describe("#reverse" , () => {
+            test("Should return geocoded address", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, {
                     "status" : {
                        "code" : 200,
                        "message" : "OK"
@@ -266,7 +263,7 @@
                                 }]
                     }
                 );
-                var ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, 'API_KEY');
+                const ocgAdapter = new OpenCageGeocoder(mockedHttpAdapter, "API_KEY");
                 ocgAdapter.reverse({lat:13.3826786867678, lon:52.51921145}, function(err, results) {
                         err.should.to.equal(false);
                         results[0].should.to.deep.equal({

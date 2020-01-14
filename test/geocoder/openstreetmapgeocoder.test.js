@@ -1,71 +1,68 @@
 (function() {
-    var chai = require('chai'),
-        should = chai.should(),
-        expect = chai.expect,
-        sinon = require('sinon');
+    const chai = require("chai"), should = chai.should(), expect = chai.expect, sinon = require("sinon");
 
-    var OpenStreetMapGeocoder = require('../../lib/geocoder/openstreetmapgeocoder.js');
+    const OpenStreetMapGeocoder = require("../../lib/geocoder/openstreetmapgeocoder.js");
 
-    var mockedHttpAdapter = {
+    const mockedHttpAdapter = {
         get: function() {}
     };
 
-    describe('OpenStreetMapGeocoder', () => {
+    describe("OpenStreetMapGeocoder", () => {
 
-        describe('#constructor' , () => {
+        describe("#constructor" , () => {
 
-            test('an http adapter must be set', () => {
+            test("an http adapter must be set", () => {
 
-                expect(function() {new OpenStreetMapGeocoder();}).to.throw(Error, 'OpenStreetMapGeocoder need an httpAdapter');
+                expect(function() {new OpenStreetMapGeocoder();}).to.throw(Error, "OpenStreetMapGeocoder need an httpAdapter");
             });
 
-            test('Should be an instance of OpenStreetMapGeocoder', () => {
+            test("Should be an instance of OpenStreetMapGeocoder", () => {
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
 
                 osmAdapter.should.be.instanceof(OpenStreetMapGeocoder);
             });
 
         });
 
-        describe('#geocode' , () => {
+        describe("#geocode" , () => {
 
-            test('Should not accept IPv4', () => {
+            test("Should not accept IPv4", () => {
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
 
                 expect(function() {
-                        osmAdapter.geocode('127.0.0.1');
-                }).to.throw(Error, 'OpenStreetMapGeocoder does not support geocoding IPv4');
+                        osmAdapter.geocode("127.0.0.1");
+                }).to.throw(Error, "OpenStreetMapGeocoder does not support geocoding IPv4");
 
             });
 
-            test('Should not accept IPv6', () => {
+            test("Should not accept IPv6", () => {
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
 
                 expect(function() {
-                        osmAdapter.geocode('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
-                }).to.throw(Error, 'OpenStreetMapGeocoder does not support geocoding IPv6');
+                        osmAdapter.geocode("2001:0db8:0000:85a3:0000:0000:ac1f:8001");
+                }).to.throw(Error, "OpenStreetMapGeocoder does not support geocoding IPv6");
 
             });
 
-            test('Should call httpAdapter get method', () => {
+            test("Should call httpAdapter get method", () => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().returns({then: function() {}});
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().returns({then: function() {}});
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
 
-                osmAdapter.geocode('1 champs élysée Paris');
+                osmAdapter.geocode("1 champs élysée Paris");
 
                 mock.verify();
 
             });
 
-            test('Should return geocoded address', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, [{
+            test("Should return geocoded address", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, [{
                         "place_id": "73723099",
                         "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
                         "osm_type": "way",
@@ -92,9 +89,9 @@
                     }]
                 );
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
 
-                osmAdapter.geocode('135 pilkington avenue, birmingham', function(err, results) {
+                osmAdapter.geocode("135 pilkington avenue, birmingham", function(err, results) {
                     mock.verify();
 
                     err.should.to.equal(false);
@@ -144,9 +141,9 @@
                 });
             });
 
-            test('Should return geocoded address when quried with object', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, [{
+            test("Should return geocoded address when quried with object", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, [{
                         "place_id": "7677374",
                         "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
                         "osm_type": "node",
@@ -172,17 +169,17 @@
                             "neighbourhood": "Williamsburg"
                         }
                     }]
-                ).withArgs('http://nominatim.openstreetmap.org/search', {
-                  format: 'json',
+                ).withArgs("http://nominatim.openstreetmap.org/search", {
+                  format: "json",
                   addressdetails: 1,
                   city: "Paris",
                   limit: 1,
                   street: "93 Champs-Élysèes"
                 });
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
 
-                osmAdapter.geocode({street:'93 Champs-Élysèes', city:'Paris', limit:1}, function(err, results) {
+                osmAdapter.geocode({street:"93 Champs-Élysèes", city:"Paris", limit:1}, function(err, results) {
                     mock.verify();
 
                     err.should.to.equal(false);
@@ -205,27 +202,27 @@
                 });
             });
 
-            test('Should ignore format and addressdetails arguments', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, [])
-                .withArgs('http://nominatim.openstreetmap.org/search', {
-                  format: 'json',
+            test("Should ignore format and addressdetails arguments", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, [])
+                .withArgs("http://nominatim.openstreetmap.org/search", {
+                  format: "json",
                   addressdetails: 1,
                   q:"Athens"
                 });
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
-                osmAdapter.geocode({q:'Athens',format:'xml',addressdetails:0}, function(err, results) {
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                osmAdapter.geocode({q:"Athens",format:"xml",addressdetails:0}, function(err, results) {
                     mock.verify();
                     done();
                 });
             });
         });
 
-        describe('#reverse' , () => {
-            test('Should return geocoded address', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, {
+        describe("#reverse" , () => {
+            test("Should return geocoded address", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, {
                         "place_id": "119109484",
                         "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
                         "osm_type": "way",
@@ -246,7 +243,7 @@
                         }
                     }
                 );
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
                 osmAdapter.reverse({lat: 40.714232, lon: -73.9612889}, function(err, results) {
                         err.should.to.equal(false);
                         results[0].should.to.deep.equal({
@@ -288,18 +285,18 @@
                 });
             });
 
-            test('Should correctly set extra arguments', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, [])
-                .withArgs('http://nominatim.openstreetmap.org/reverse', {
-                  format: 'json',
+            test("Should correctly set extra arguments", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, [])
+                .withArgs("http://nominatim.openstreetmap.org/reverse", {
+                  format: "json",
                   addressdetails: 1,
                   lat:12,
                   lon:7,
                   zoom:15
                 });
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
                 osmAdapter.reverse({lat:12,lon:7,zoom:15}, function(err, results) {
                     mock.verify();
                     done();
@@ -307,19 +304,19 @@
             });
 
             test(
-                'Should correctly set extra arguments from constructor extras',
+                "Should correctly set extra arguments from constructor extras",
                 done => {
-                    var mock = sinon.mock(mockedHttpAdapter);
-                    mock.expects('get').once().callsArgWith(2, false, [])
-                    .withArgs('http://nominatim.openstreetmap.org/reverse', {
-                      format: 'json',
+                    const mock = sinon.mock(mockedHttpAdapter);
+                    mock.expects("get").once().callsArgWith(2, false, [])
+                    .withArgs("http://nominatim.openstreetmap.org/reverse", {
+                      format: "json",
                       addressdetails: 1,
                       lat:12,
                       lon:7,
                       zoom:9
                     });
 
-                    var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter,{zoom:9});
+                    const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter,{zoom:9});
                     osmAdapter.reverse({lat:12,lon:7}, function(err, results) {
                         mock.verify();
                         done();
@@ -327,18 +324,18 @@
                 }
             );
 
-            test('Should ignore format and addressdetails arguments', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, [])
-                .withArgs('http://nominatim.openstreetmap.org/reverse', {
-                  format: 'json',
+            test("Should ignore format and addressdetails arguments", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, [])
+                .withArgs("http://nominatim.openstreetmap.org/reverse", {
+                  format: "json",
                   addressdetails: 1,
                   lat:12,
                   lon:7
                 });
 
-                var osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
-                osmAdapter.reverse({lat:12,lon:7,format:'xml',addressdetails:0}, function(err, results) {
+                const osmAdapter = new OpenStreetMapGeocoder(mockedHttpAdapter);
+                osmAdapter.reverse({lat:12,lon:7,format:"xml",addressdetails:0}, function(err, results) {
                     mock.verify();
                     done();
                 });

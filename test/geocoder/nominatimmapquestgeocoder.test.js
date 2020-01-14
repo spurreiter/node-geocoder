@@ -1,79 +1,76 @@
 (function() {
-    var chai = require('chai'),
-        should = chai.should(),
-        expect = chai.expect,
-        sinon = require('sinon');
+    const chai = require("chai"), should = chai.should(), expect = chai.expect, sinon = require("sinon");
 
-    var NominatimMapquestGeocoder = require('../../lib/geocoder/nominatimmapquestgeocoder.js');
+    const NominatimMapquestGeocoder = require("../../lib/geocoder/nominatimmapquestgeocoder.js");
 
-    var mockedHttpAdapter = {
+    const mockedHttpAdapter = {
         get: function() {}
     };
 
-    describe('NominatimMapquestGeocoder', () => {
+    describe("NominatimMapquestGeocoder", () => {
 
-        describe('#constructor' , () => {
+        describe("#constructor" , () => {
 
-            test('an http adapter must be set', () => {
+            test("an http adapter must be set", () => {
 
-                expect(function() {new NominatimMapquestGeocoder();}).to.throw(Error, 'NominatimMapquestGeocoder need an httpAdapter');
+                expect(function() {new NominatimMapquestGeocoder();}).to.throw(Error, "NominatimMapquestGeocoder need an httpAdapter");
             });
 
-            test('an apiKey must be set', () => {
+            test("an apiKey must be set", () => {
 
-                expect(function() {new NominatimMapquestGeocoder(mockedHttpAdapter);}).to.throw(Error, 'NominatimMapquestGeocoder needs an apiKey');
+                expect(function() {new NominatimMapquestGeocoder(mockedHttpAdapter);}).to.throw(Error, "NominatimMapquestGeocoder needs an apiKey");
             });
 
-            test('Should be an instance of NominatimMapquestGeocoder', () => {
+            test("Should be an instance of NominatimMapquestGeocoder", () => {
 
-                var nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
 
                 nmAdapter.should.be.instanceof(NominatimMapquestGeocoder);
             });
 
         });
 
-        describe('#geocode' , () => {
+        describe("#geocode" , () => {
 
-            test('Should not accept IPv4', () => {
+            test("Should not accept IPv4", () => {
 
-                var nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
 
                 expect(function() {
-                        nmAdapter.geocode('127.0.0.1');
-                }).to.throw(Error, 'NominatimMapquestGeocoder does not support geocoding IPv4');
+                        nmAdapter.geocode("127.0.0.1");
+                }).to.throw(Error, "NominatimMapquestGeocoder does not support geocoding IPv4");
 
             });
 
-            test('Should not accept IPv6', () => {
+            test("Should not accept IPv6", () => {
 
-                var nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
 
                 expect(function() {
-                        nmAdapter.geocode('2001:0db8:0000:85a3:0000:0000:ac1f:8001');
-                }).to.throw(Error, 'NominatimMapquestGeocoder does not support geocoding IPv6');
+                        nmAdapter.geocode("2001:0db8:0000:85a3:0000:0000:ac1f:8001");
+                }).to.throw(Error, "NominatimMapquestGeocoder does not support geocoding IPv6");
 
             });
 
-            test('Should call httpAdapter get method', () => {
+            test("Should call httpAdapter get method", () => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once()
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once()
                 .withArgs("http://open.mapquestapi.com/nominatim/v1/search",
-                { key: 'API_KEY', addressdetails: 1, format: "json", q: "1 champs élysée Paris" })
+                { key: "API_KEY", addressdetails: 1, format: "json", q: "1 champs élysée Paris" })
                 .returns({then: function() {}});
 
-                var nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
 
-                nmAdapter.geocode('1 champs élysée Paris');
+                nmAdapter.geocode("1 champs élysée Paris");
 
                 mock.verify();
 
             });
 
-            test('Should return geocoded address', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, [{
+            test("Should return geocoded address", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, [{
                         "place_id": "80515867",
                         "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
                         "osm_type": "way",
@@ -100,9 +97,9 @@
                     }]
                 );
 
-                var nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
 
-                nmAdapter.geocode('135 pilkington avenue, birmingham', function(err, results) {
+                nmAdapter.geocode("135 pilkington avenue, birmingham", function(err, results) {
                     mock.verify();
 
                     err.should.to.equal(false);
@@ -127,12 +124,12 @@
 
         });
 
-        describe('#reverse' , () => {
-            test('Should return geocoded address', done => {
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once()
+        describe("#reverse" , () => {
+            test("Should return geocoded address", done => {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once()
                 .withArgs("http://open.mapquestapi.com/nominatim/v1/reverse",
-                { key: 'API_KEY', addressdetails: 1, format: "json", lat:40.714232, lon:-73.9612889 })
+                { key: "API_KEY", addressdetails: 1, format: "json", lat:40.714232, lon:-73.9612889 })
                 .callsArgWith(2, false, {
                         "place_id": "149160357",
                         "licence": "Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
@@ -154,7 +151,7 @@
                         }
                     }
                 );
-                var nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const nmAdapter = new NominatimMapquestGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
                 nmAdapter.reverse({lat:40.714232,lon:-73.9612889}, function(err, results) {
                     mock.verify();
                     err.should.to.equal(false);

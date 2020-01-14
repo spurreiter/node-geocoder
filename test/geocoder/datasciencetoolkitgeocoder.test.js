@@ -1,63 +1,60 @@
 (function() {
-    var chai = require('chai'),
-        should = chai.should(),
-        expect = chai.expect,
-        sinon = require('sinon');
+    const chai = require("chai"), should = chai.should(), expect = chai.expect, sinon = require("sinon");
 
-    var DataScienceToolkitGeocoder = require('../../lib/geocoder/datasciencetoolkitgeocoder.js');
+    const DataScienceToolkitGeocoder = require("../../lib/geocoder/datasciencetoolkitgeocoder.js");
 
-    var mockedHttpAdapter = {
+    const mockedHttpAdapter = {
         get: function() {}
     };
 
-    describe('DataScienceToolkitGeocoder', () => {
+    describe("DataScienceToolkitGeocoder", () => {
 
-        describe('#constructor' , () => {
+        describe("#constructor" , () => {
 
-            test('an http adapter must be set', () => {
+            test("an http adapter must be set", () => {
 
-                expect(function() {new DataScienceToolkitGeocoder();}).to.throw(Error, 'DataScienceToolkitGeocoder need an httpAdapter');
+                expect(function() {new DataScienceToolkitGeocoder();}).to.throw(Error, "DataScienceToolkitGeocoder need an httpAdapter");
             });
 
-            test('Should be an instance of DataScienceToolkitGeocoder', () => {
+            test("Should be an instance of DataScienceToolkitGeocoder", () => {
 
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
 
                 geocoder.should.be.instanceof(DataScienceToolkitGeocoder);
             });
 
         });
 
-        describe('#geocode' , () => {
+        describe("#geocode" , () => {
 
-            test('Should call httpAdapter get method', () => {
+            test("Should call httpAdapter get method", () => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().returns({then: function() {}});
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().returns({then: function() {}});
 
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
 
-                geocoder.geocode('127.0.0.1');
-
-                mock.verify();
-            });
-
-            test('Should call httpAdapter get method with specified host', () => {
-
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').withArgs('http://raoul.io/ip2coordinates/127.0.0.1', {}).once().returns({then: function() {}});
-
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter, {host: 'raoul.io'});
-
-                geocoder.geocode('127.0.0.1');
+                geocoder.geocode("127.0.0.1");
 
                 mock.verify();
             });
 
-            test('Should return a geocoded address', done => {
+            test("Should call httpAdapter get method with specified host", () => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").withArgs("http://raoul.io/ip2coordinates/127.0.0.1", {}).once().returns({then: function() {}});
+
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter, {host: "raoul.io"});
+
+                geocoder.geocode("127.0.0.1");
+
+                mock.verify();
+            });
+
+            test("Should return a geocoded address", done => {
+
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, {
                         "67.169.73.113":{
                             "country_name":"United States",
                             "area_code":415,
@@ -72,9 +69,9 @@
                         }
                     }
                 );
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
 
-                geocoder.geocode('67.169.73.113', function(err, results) {
+                geocoder.geocode("67.169.73.113", function(err, results) {
                     err.should.to.equal(false);
                     results[0].should.to.deep.equal({
                         "latitude": 37.7587013244629,
@@ -93,10 +90,10 @@
 
             });
 
-            test('Should return a geocoded address', done => {
+            test("Should return a geocoded address", done => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, {
                         "2543 Graystone Place, Simi Valley, CA 93065": {
                             "country_code3": "USA",
                             "latitude": 34.280874,
@@ -113,9 +110,9 @@
                         }
                     }
                 );
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
 
-                geocoder.geocode('2543 Graystone Place, Simi Valley, CA 93065', function(err, results) {
+                geocoder.geocode("2543 Graystone Place, Simi Valley, CA 93065", function(err, results) {
                     err.should.to.equal(false);
                     results[0].should.to.deep.equal({
                         "latitude": 34.280874,
@@ -134,17 +131,17 @@
 
             });
 
-            test('Should error for no result', done => {
+            test("Should error for no result", done => {
 
-                var mock = sinon.mock(mockedHttpAdapter);
-                mock.expects('get').once().callsArgWith(2, false, {
+                const mock = sinon.mock(mockedHttpAdapter);
+                mock.expects("get").once().callsArgWith(2, false, {
                         "2543 Graystone Place, #123, Simi Valley, CA 93065": null
                     }
                 );
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
 
-                geocoder.geocode('2543 Graystone Place, #123, Simi Valley, CA 93065', function(err, results) {
-                    err.message.should.to.equal('Could not geocode "2543 Graystone Place, #123, Simi Valley, CA 93065".');
+                geocoder.geocode("2543 Graystone Place, #123, Simi Valley, CA 93065", function(err, results) {
+                    err.message.should.to.equal("Could not geocode \"2543 Graystone Place, #123, Simi Valley, CA 93065\".");
                     mock.verify();
                     done();
                 });
@@ -152,12 +149,12 @@
             });
         });
 
-        describe('#reverse' , () => {
-            test('Should throw an error', () => {
-                var geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
+        describe("#reverse" , () => {
+            test("Should throw an error", () => {
+                const geocoder = new DataScienceToolkitGeocoder(mockedHttpAdapter);
                 expect(function() {geocoder.reverse(10.0235,-2.3662);})
                     .to
-                    .throw(Error, 'DataScienceToolkitGeocoder no support reverse geocoding');
+                    .throw(Error, "DataScienceToolkitGeocoder no support reverse geocoding");
 
             });
         });

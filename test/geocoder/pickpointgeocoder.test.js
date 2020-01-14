@@ -1,44 +1,41 @@
 (function () {
-    var chai = require('chai'),
-        should = chai.should(),
-        expect = chai.expect,
-        sinon = require('sinon');
+    const chai = require("chai"), should = chai.should(), expect = chai.expect, sinon = require("sinon");
 
-    var PickPointGeocoder = require('../../lib/geocoder/pickpointgeocoder.js');
+    const PickPointGeocoder = require("../../lib/geocoder/pickpointgeocoder.js");
 
-    var mockedHttpAdapter = {
+    const mockedHttpAdapter = {
         get: sinon.stub(),
         supportsHttps: sinon.stub()
     };
 
-    describe('PickPointGeocoder', () => {
+    describe("PickPointGeocoder", () => {
 
-        describe('#constructor', () => {
+        describe("#constructor", () => {
 
-            test('should be an instance of PickPointGeocoder', () => {
+            test("should be an instance of PickPointGeocoder", () => {
                 mockedHttpAdapter.supportsHttps.returns(true);
-                var geocoder = new PickPointGeocoder(mockedHttpAdapter, {apiKey: 'API_KEY'});
+                const geocoder = new PickPointGeocoder(mockedHttpAdapter, {apiKey: "API_KEY"});
                 geocoder.should.be.instanceof(PickPointGeocoder);
             });
 
-            test('an http adapter must be set', () => {
+            test("an http adapter must be set", () => {
                 expect(function () {
                     new PickPointGeocoder();
-                }).to.throw(Error, 'PickPointGeocoder need an httpAdapter');
+                }).to.throw(Error, "PickPointGeocoder need an httpAdapter");
             });
 
-            test('the adapter should support https', () => {
+            test("the adapter should support https", () => {
                 mockedHttpAdapter.supportsHttps.returns(false);
                 expect(function () {
                     new PickPointGeocoder(mockedHttpAdapter);
-                }).to.throw(Error, 'You must use https http adapter');
+                }).to.throw(Error, "You must use https http adapter");
             });
 
-            test('an apiKey must be set', () => {
+            test("an apiKey must be set", () => {
                 mockedHttpAdapter.supportsHttps.returns(true);
                 expect(function () {
                     new PickPointGeocoder(mockedHttpAdapter);
-                }).to.throw(Error, 'PickPointGeocoder needs an apiKey');
+                }).to.throw(Error, "PickPointGeocoder needs an apiKey");
             });
 
         });
